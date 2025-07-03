@@ -57,6 +57,9 @@
 #include "esp_random.h"
 #include "gatt_dice.h"
 
+#include "hci_dump.h"
+#include "hci_dump_embedded_stdout.h"
+
 #define HEARTBEAT_PERIOD_MS 2500
 
 /* @section Main Application Setup
@@ -150,6 +153,8 @@ const uint8_t adv_data_len = sizeof(adv_data);
 
 static void le_dice_setup(void) {
 
+    hci_dump_init(hci_dump_embedded_stdout_get_instance());
+
 #ifdef ENABLE_CROSS_TRANSPORT_KEY_DERIVATION
     printf("Cross transport key derivavtion is enabled\n");
 #endif
@@ -164,7 +169,7 @@ static void le_dice_setup(void) {
     sm_set_secure_connections_only_mode(true);
     sm_set_io_capabilities(IO_CAPABILITY_NO_INPUT_NO_OUTPUT);
     sm_set_authentication_requirements(
-        SM_AUTHREQ_SECURE_CONNECTION | SM_AUTHREQ_MITM_PROTECTION
+        SM_AUTHREQ_SECURE_CONNECTION | SM_AUTHREQ_MITM_PROTECTION | SM_AUTHREQ_BONDING
     );
 #endif
 
